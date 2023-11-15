@@ -9,7 +9,9 @@ form.addEventListener('submit', e => {
   e.preventDefault();
   let count = +firstDelay.value;
   for (let i = 1; i <= amount.value; i++) {
-    createPromise(i, count).then(res => Notify.success(res)).catch(err => Notify.failure(err))
+    createPromise(i, count)
+      .then(res => Notify.success(res))
+      .catch(err => Notify.failure(err));
     count += +step.value;
   }
 });
@@ -20,13 +22,9 @@ function createPromise(position, delay) {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (shouldResolve) {
-        resolve(
-        `✅ Fulfilled promise ${position} in ${delay}ms`
-        );
+        resolve(`✅ Fulfilled promise ${position} in ${delay}ms`);
       } else {
-        reject(
-         `❌ Rejected promise ${position} in ${delay}ms`
-        );
+        reject(`❌ Rejected promise ${position} in ${delay}ms`);
       }
     }, delay);
   });
