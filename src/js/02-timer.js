@@ -18,8 +18,6 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
-    // tyt nad оброляти дату обрану користувачем
     if (selectedDates[0] < new Date()) {
       Notify.failure('Please choose a date in the future');
       btn.disabled = true;
@@ -34,8 +32,19 @@ flatpickr('#datetime-picker', options);
 
 function start() {
   btn.disabled = true;
-  setInterval(() => {
-    const hourLefts = convertMs(selectedDate.getTime() - new Date().getTime());
+  const timer = setInterval(() => {
+    const ms = selectedDate.getTime() - new Date().getTime();
+    const hourLefts = convertMs(ms);
+
+    if (ms < 1000) {
+      clearInterval(timer);
+      btn.disabled = false;
+      s.textContent = '00';
+      Notify.success('Finished');
+
+      return;
+    }
+
     const { days, hours, minutes, seconds } = addLeadingZero(hourLefts);
 
     d.textContent = days;
@@ -66,7 +75,10 @@ function convertMs(ms) {
 }
 
 function addLeadingZero(value) {
-  const i = '1';
-  for (let key in value) value[key] = value[key].toString().padStart(2, '0');
-  return value;
+  return Object.fromEntries(
+    Object.entries(value).map(([key, val]) => [
+      key,
+      val.toString().padStart(2, '0'),
+    ])
+  );
 }
